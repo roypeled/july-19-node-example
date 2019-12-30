@@ -2,18 +2,29 @@ const http = require('http');
 const fs = require('fs');
 const Url = require('url-parse');
 
+const messagesHistory = require('./history') || [];
+
+function messagesToHTML(messagesArray) {
+    return messagesArray
+        .map(message => `
+            <p><strong>${message.name}</strong>: ${message.message}</p>
+        `)
+        .join('')
+}
+
 const serverCallback = (request, response) => {
     if(request.url === "/favicon.ico") return;
 
     const url = new Url(request.url, true);
 
-    fs.writeFileSync('name.txt', JSON.stringify(url.query));
+    messagesHistory.push(url.query);
 
-    response.writeHead(200, {'Content-Type': 'text/html'});
+    fs.writeFileSync('history.json', JSON.stringify(messagesHistory));
+
     let file = fs.readFileSync('site.html', { encoding: 'UTF-8' });
 
     file = file.replace(/%name%/g, url.query.name);
-
+    file = file.replace(/%chat%/g, messagesToHTML(messagesHistory));
 
     response.write(file);
     response.end();

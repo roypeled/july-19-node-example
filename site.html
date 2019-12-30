@@ -6,12 +6,17 @@
 </head>
 <body>
 
-<h1>Welcome %name%</h1>
+
+<fieldset>
+    %chat%
+</fieldset>
 
 <fieldset>
     <legend>This is my form</legend>
     <form method="get" action="/">
         <input value="%name%" name="name" placeholder="Please tell me your name">
+        <input name="message" placeholder="What do you want to say?">
+        <button>Send</button>
     </form>
 </fieldset>
 </body>
